@@ -3,6 +3,7 @@
 Resume Roaster is a modern web application that analyzes resumes in two unique modes:
 
 1.Roast Mode 
+
 2.Optimizer Mode.
 
 Built using HTML, CSS, and JavaScript, it provides instant resume feedback directly in the browser without requiring a backend server or API key.
@@ -70,4 +71,5 @@ Built using HTML, CSS, and JavaScript, it provides instant resume feedback direc
 👨‍💻 Author
 
 Keerthana B
+
 Electronics Student | Developer | Hackathon Participant.
