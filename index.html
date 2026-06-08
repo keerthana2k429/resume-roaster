@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resume Roaster 🔥</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --border: #2a2a2a;
+      --text: #f0ece3;
+      --muted: #6b6b6b;
+      --roast: #ff4d1c;
+      --roast-glow: rgba(255, 77, 28, 0.15);
+      --optimize: #00e5a0;
+      --optimize-glow: rgba(0, 229, 160, 0.15);
+      --accent: var(--roast);
+      --accent-glow: var(--roast-glow);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(255,77,28,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 30% at 80% 80%, rgba(0,229,160,0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      transition: background 0.6s ease;
+    }
+
+    body.optimize-mode::before {
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,229,160,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 30% at 80% 80%, rgba(255,77,28,0.04) 0%, transparent 70%);
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .header-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(56px, 10vw, 96px);
+      letter-spacing: 0.03em;
+      line-height: 0.9;
+      color: var(--text);
+      transition: color 0.4s;
+    }
+
+    .header h1 .fire {
+      color: var(--roast);
+      transition: color 0.4s;
+    }
+
+    body.optimize-mode .header h1 .fire {
+      color: var(--optimize);
+    }
+
+    .header-sub {
+      font-size: 15px;
+      color: var(--muted);
+      margin-top: 14px;
+      font-weight: 300;
+    }
+
+    /* Toggle */
+    .mode-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 40px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .toggle-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 10px 28px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .toggle-btn:first-child { border-radius: 4px 0 0 4px; border-right: none; }
+    .toggle-btn:last-child  { border-radius: 0 4px 4px 0; border-left: none; }
+
+    .toggle-btn.active-roast {
+      background: var(--roast);
+      border-color: var(--roast);
+      color: #fff;
+    }
+
+    .toggle-btn.active-optimize {
+      background: var(--optimize);
+      border-color: var(--optimize);
+      color: #000;
+    }
+
+    .field-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      padding: 12px 16px;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    body.optimize-mode textarea:focus {
+      border-color: var(--optimize);
+    }
+
+    /* Resume input */
+    .resume-section {
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    textarea#resumeInput {
+      min-height: 220px;
+      line-height: 1.7;
+    }
+
+    .char-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      text-align: right;
+      margin-top: 6px;
+    }
+
+    /* CTA Button */
+    .cta-btn {
+      width: 100%;
+      padding: 18px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.12em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 40px;
+      animation: fadeUp 0.6s 0.25s ease both;
+    }
+
+    .cta-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.08);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .cta-btn:hover::after { opacity: 1; }
+
+    .cta-btn:active { transform: scale(0.99); }
+
+    .cta-btn.roast-btn {
+      background: var(--roast);
+      color: #fff;
+      box-shadow: 0 0 40px var(--roast-glow);
+    }
+
+    .cta-btn.optimize-btn {
+      background: var(--optimize);
+      color: #000;
+      box-shadow: 0 0 40px var(--optimize-glow);
+    }
+
+    .cta-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Output */
+    .output-section {
+      display: none;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .output-section.visible { display: block; }
+
+    .output-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .output-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 3px;
+    }
+
+    .output-tag.roast-tag {
+      background: var(--roast-glow);
+      color: var(--roast);
+      border: 1px solid rgba(255,77,28,0.3);
+    }
+
+    .output-tag.optimize-tag {
+      background: var(--optimize-glow);
+      color: var(--optimize);
+      border: 1px solid rgba(0,229,160,0.3);
+    }
+
+    .output-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px;
+      line-height: 1.8;
+      font-size: 15px;
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+      position: relative;
+    }
+
+    .output-card.roast-card {
+      border-left: 3px solid var(--roast);
+    }
+
+    .output-card.optimize-card {
+      border-left: 3px solid var(--optimize);
+    }
+
+    /* Streaming cursor */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--accent);
+      vertical-align: text-bottom;
+      animation: blink 0.8s step-end infinite;
+      margin-left: 2px;
+    }
+
+    body.optimize-mode .cursor { background: var(--optimize); }
+
+    /* Loading */
+    .loading-bar {
+      height: 2px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .loading-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.3s;
+      border-radius: 2px;
+    }
+
+    body.optimize-mode .loading-fill { background: var(--optimize); }
+
+    /* Copy button */
+    .copy-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover { border-color: var(--text); color: var(--text); }
+
+    /* Error */
+    .error-box {
+      background: rgba(255,77,28,0.08);
+      border: 1px solid rgba(255,77,28,0.3);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--roast);
+      display: none;
+      margin-bottom: 20px;
+    }
+
+    .error-box.visible { display: block; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--border);
+      text-transform: uppercase;
+    }
+
+    /* Animations */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container { padding: 32px 16px 60px; }
+      .output-card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <p class="header-eyebrow">Bug Busters Assignment · Project 05</p>
+      <h1>RESUME <span class="fire">ROASTER</span></h1>
+      <p class="header-sub">Paste your resume. Get destroyed — or elevated.</p>
+    </div>
+
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+      <button class="toggle-btn active-roast" id="roastBtn" onclick="setMode('roast')">🔥 Roast Mode</button>
+      <button class="toggle-btn" id="optimizeBtn" onclick="setMode('optimize')">✨ Optimizer Mode</button>
+    </div>
+
+    <!-- Resume Input -->
+    <div class="resume-section">
+      <label class="field-label" for="resumeInput">Your Resume / Bullet Points</label>
+      <textarea id="resumeInput" placeholder="Paste your resume here — work experience, skills, summary, anything. The more you give, the more brutal (or helpful) the response."></textarea>
+      <p class="char-count" id="charCount">0 characters</p>
+    </div>
+
+    <!-- Error -->
+    <div class="error-box" id="errorBox"></div>
+
+    <!-- CTA -->
+    <button class="cta-btn roast-btn" id="ctaBtn" onclick="analyze()">
+      🔥 ROAST MY RESUME
+    </button>
+
+    <!-- Output -->
+    <div class="output-section" id="outputSection">
+      <div class="output-header">
+        <span class="output-tag roast-tag" id="outputTag">ROAST</span>
+        <span style="font-size:13px; color: var(--muted); font-family: 'DM Mono', monospace;" id="engineMotto">powered by local engine</span>
+      </div>
+      <div class="loading-bar" id="loadingBar" style="display:none">
+        <div class="loading-fill" id="loadingFill"></div>
+      </div>
+      <div class="output-card roast-card" id="outputCard">
+        <button class="copy-btn" onclick="copyOutput()">Copy</button>
+        <span id="outputText"></span><span class="cursor" id="cursor"></span>
+      </div>
+    </div>
+
+    <div class="footer">Resume Roaster · Bug Busters · Powered Client-Side</div>
+  </div>
+
+  <script>
+    let currentMode = 'roast';
+    let isLoading = false;
+
+    window.onload = () => {
+      document.getElementById('resumeInput').addEventListener('input', updateCharCount);
+    };
+
+    function setMode(mode) {
+      currentMode = mode;
+      const body = document.body;
+      const roastBtn = document.getElementById('roastBtn');
+      const optimizeBtn = document.getElementById('optimizeBtn');
+      const ctaBtn = document.getElementById('ctaBtn');
+      const outputTag = document.getElementById('outputTag');
+      const outputCard = document.getElementById('outputCard');
+      const engineMotto = document.getElementById('engineMotto');
+
+      if (mode === 'roast') {
+        body.classList.remove('optimize-mode');
+        roastBtn.className = 'toggle-btn active-roast';
+        optimizeBtn.className = 'toggle-btn';
+        ctaBtn.className = 'cta-btn roast-btn';
+        ctaBtn.textContent = '🔥 ROAST MY RESUME';
+        outputTag.className = 'output-tag roast-tag';
+        outputTag.textContent = 'ROAST';
+        outputCard.className = 'output-card roast-card';
+        engineMotto.textContent = 'powered by local engine';
+      } else {
+        body.classList.add('optimize-mode');
+        roastBtn.className = 'toggle-btn';
+        optimizeBtn.className = 'toggle-btn active-optimize';
+        ctaBtn.className = 'cta-btn optimize-btn';
+        ctaBtn.textContent = '✨ OPTIMIZE MY RESUME';
+        outputTag.className = 'output-tag optimize-tag';
+        outputTag.textContent = 'OPTIMIZED';
+        outputCard.className = 'output-card optimize-card';
+        engineMotto.textContent = 'powered by metrics engine';
+      }
+
+      document.getElementById('outputSection').classList.remove('visible');
+      document.getElementById('outputText').textContent = '';
+      hideError();
+    }
+
+    function updateCharCount() {
+      const len = document.getElementById('resumeInput').value.length;
+      document.getElementById('charCount').textContent = `${len.toLocaleString()} characters`;
+    }
+
+    function hideError() {
+      const el = document.getElementById('errorBox');
+      el.classList.remove('visible');
+      el.textContent = '';
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorBox');
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+
+    /* Local Heuristic Text Generators */
+    function generateLocalResponse(text) {
+      const lower = text.toLowerCase();
+      
+      // Look for weak words
+      const weaknesses = [];
+      if (lower.includes('responsible for')) weaknesses.push('"Responsible for" is passive boilerplate garbage. It means you sat there, not that you achieved anything.');
+      if (lower.includes('assisted') || lower.includes('helped')) weaknesses.push('"Assisted" or "Helped" reads like you watched someone else do the cool stuff from across the room.');
+      if (lower.includes('team player') || lower.includes('hardworking')) weaknesses.push('Clichés like "Team player" or "Hardworking" are filler words that waste premium visual real estate.');
+      if (!/\d+/.test(lower)) weaknesses.push('There is a criminal lack of quantitative metrics. Did you save money? Did you push features? Give us numbers, not adjectives.');
+      if (text.length < 150) weaknesses.push('This resume segment is shorter than a modern attention span. Add substance or explain your actual scope.');
+
+      if (currentMode === 'roast') {
+        let roastOut = `🚨 CRITIQUE & BRUTAL ANALYSIS:\n\n`;
+        if (weaknesses.length > 0) {
+          weaknesses.forEach((w, idx) => {
+            roastOut += `${idx + 1}. ${w}\n\n`;
+          });
+        } else {
+          roastOut += `1. Looks cleanly written on the surface, but it's dangerously safe. It feels sanitized by an HR robot. Where is the actual personality or groundbreaking impact?\n\n`;
+        }
+        roastOut += `💀 THE DIAGNOSIS:\n`;
+        roastOut += `This looks less like a trajectory of achievements and more like an operations manual of things you happened to be near. It doesn't scream 'hire me,' it whimpers 'I was present.'\n\n`;
+        roastOut += `🌱 GENUINE ENCOURAGEMENT:\n`;
+        roastOut += `The core foundational technical details are present! Swap those weak verbs out for high-impact action declarations and attach real metrics, and recruiters will actually stay awake reading this.`;
+        return roastOut;
+      } else {
+        let optOut = `✨ ATS & METRIC-DRIVEN OPTIMIZATIONS:\n\n`;
+        
+        // Break original text into snippets to simulate a Before -> After parsing engine
+        const lines = text.split(/[.\n]/).map(l => l.trim()).filter(l => l.length > 15);
+        const sampleBullets = lines.slice(0, 3);
+
+        if (sampleBullets.length > 0) {
+          sampleBullets.forEach((bullet) => {
+            optOut += `Before ➔ "${bullet}"\n`;
+            let improved = bullet;
+            // Mock transformation replacements
+            improved = improved.replace(/responsible for/i, 'Spearheaded the development and execution of');
+            improved = improved.replace(/helped/i, 'Collaborated cross-functionally to optimize');
+            improved = improved.replace(/assisted/i, 'Partnered alongside engineering leads to implement');
+            if (!/\d+/.test(improved)) {
+              improved += ' — driving a 22% improvement in overall operation performance and efficiency';
+            } else {
+              improved += ' — scaling enterprise processing capability and system reliability by an additional 15%';
+            }
+            optOut += `After  ➔ "🚀 ${improved}."\n\n`;
+          });
+        } else {
+          optOut += `Before ➔ "${text.substring(0, 60)}..."\n`;
+          optOut += `After  ➔ "🚀 Engineered scalable workflows and cross-functional processes, optimizing delivery cycles by 25% and mitigating systemic overhead."\n\n`;
+        }
+
+        optOut += `💡 TOP STRATEGIC RECOMMENDATIONS:\n`;
+        optOut += `• Always lead each bullet layout with high-octane verbs (e.g., Architected, Orchestrated, Quantified).\n`;
+        optOut += `• Standardize with the X-Y-Z formula: "Accomplished [X], as measured by [Y], by doing [Z]".`;
+        return optOut;
+      }
+    }
+
+    async function analyze() {
+      if (isLoading) return;
+
+      const resume = document.getElementById('resumeInput').value.trim();
+      hideError();
+
+      if (resume.length < 30) { 
+        showError('⚠ Please paste at least a few lines of your resume before roasting.'); 
+        return; 
+      }
+
+      isLoading = true;
+      const ctaBtn = document.getElementById('ctaBtn');
+      ctaBtn.disabled = true;
+      ctaBtn.textContent = currentMode === 'roast' ? '🔥 Roasting...' : '✨ Optimizing...';
+
+      const outputSection = document.getElementById('outputSection');
+      const outputText = document.getElementById('outputText');
+      const loadingBar = document.getElementById('loadingBar');
+      const loadingFill = document.getElementById('loadingFill');
+      const cursor = document.getElementById('cursor');
+
+      outputText.textContent = '';
+      outputSection.classList.add('visible');
+      loadingBar.style.display = 'block';
+      cursor.style.display = 'inline-block';
+
+      // Simulating a native process load
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress = Math.min(progress + Math.random() * 12, 90);
+        loadingFill.style.width = progress + '%';
+      }, 100);
+
+      // Generate the programmatic analysis response
+      const targetText = generateLocalResponse(resume);
+
+      setTimeout(() => {
+        clearInterval(progressInterval);
+        loadingFill.style.width = '100%';
+        
+        setTimeout(() => { 
+          loadingBar.style.display = 'none'; 
+          loadingFill.style.width = '0%'; 
+          
+          // Smoothly animate the stream typewriter text layout
+          let currentIdx = 0;
+          const typingInterval = setInterval(() => {
+            if (currentIdx < targetText.length) {
+              // Write small chunks for a natural streaming experience
+              const chunkLength = Math.floor(Math.random() * 3) + 1;
+              outputText.textContent += targetText.substring(currentIdx, currentIdx + chunkLength);
+              currentIdx += chunkLength;
+              outputSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+              clearInterval(typingInterval);
+              finalizeProcessing();
+            }
+          }, 15);
+
+        }, 200);
+      }, 1200);
+
+      function finalizeProcessing() {
+        isLoading = false;
+        cursor.style.display = 'none';
+        ctaBtn.disabled = false;
+        ctaBtn.textContent = currentMode
